@@ -231,6 +231,7 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(damageSoundEngine);
             _enginesRoot.AddEngine(hudEngine);
             _enginesRoot.AddEngine(new ScoreEngine(scoreOnEnemyKilledObserver));
+			_enginesRoot.AddEngine(new WaveAnnouncerEngine());
         }
         
         /// <summary>
