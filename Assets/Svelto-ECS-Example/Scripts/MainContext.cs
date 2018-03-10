@@ -144,9 +144,10 @@ namespace Svelto.ECS.Example.Survive
             var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
             var playerAnimationEngine = new PlayerAnimationEngine();
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
-            
-            //Enemy related engines
-            var enemyAnimationEngine = new EnemyAnimationEngine(time);
+            var playerAmmoBoxEngine = new PlayerAmmoBoxEngine();
+
+			//Enemy related engines
+			var enemyAnimationEngine = new EnemyAnimationEngine(time);
             //HealthEngine is a different object for the enemy because it uses a different sequence
             var enemyHealthEngine = new HealthEngine(enemyDamageSequence);
             var enemyAttackEngine = new EnemyAttackEngine(playerDamageSequence, time);
@@ -219,6 +220,7 @@ namespace Svelto.ECS.Example.Survive
             _enginesRoot.AddEngine(playerHealthEngine);
             _enginesRoot.AddEngine(new PlayerInputEngine());
             _enginesRoot.AddEngine(new PlayerGunShootingFXsEngine());
+			_enginesRoot.AddEngine(playerAmmoBoxEngine);
             //enemy engines
             _enginesRoot.AddEngine(enemySpawnerEngine);
             _enginesRoot.AddEngine(enemyAttackEngine);

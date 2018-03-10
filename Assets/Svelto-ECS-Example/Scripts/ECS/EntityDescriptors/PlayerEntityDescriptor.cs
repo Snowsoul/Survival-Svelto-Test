@@ -2,6 +2,7 @@
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.ECS.Example.Survive.Sound;
+using Svelto.ECS.Example.Survive.Player.Bonus;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
