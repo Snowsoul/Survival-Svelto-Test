@@ -664,7 +664,7 @@ GameObject:
   - component: {fileID: 87904142}
   - component: {fileID: 87904141}
   m_Layer: 0
-  m_Name: AmmoBoxes
+  m_Name: PlayerBonus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -691,6 +691,7 @@ Transform:
   m_LocalPosition: {x: 85.06626, y: 2.328827, z: -5.79131}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 139753981}
   - {fileID: 261496743}
   m_Father: {fileID: 412089776}
   m_RootOrder: 1
@@ -908,6 +909,7 @@ GameObject:
   - component: {fileID: 139753980}
   - component: {fileID: 139753979}
   - component: {fileID: 139753978}
+  - component: {fileID: 139753982}
   m_Layer: 0
   m_Name: Medkit
   m_TagString: Untagged
@@ -956,7 +958,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 139753977}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -975,15 +977,26 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 139753977}
   m_LocalRotation: {x: -0, y: 0.38268343, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 1.13, y: 0.06, z: 8.79}
+  m_LocalPosition: {x: -83.936264, y: -2.268827, z: 14.58131}
   m_LocalScale: {x: 0.9220805, y: 0.24890825, z: 1.0244715}
   m_Children:
   - {fileID: 815012585}
   - {fileID: 247082725}
   - {fileID: 672088359}
-  m_Father: {fileID: 1724112848}
+  m_Father: {fileID: 87904142}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &139753982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 139753977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c04bed8c28a4f804eaa36d818fcc5b6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &208664229
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,7 +1901,6 @@ Transform:
   m_Children:
   - {fileID: 1139190134}
   - {fileID: 87904142}
-  - {fileID: 1724112848}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6244,35 +6256,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1712414649}
---- !u!1 &1724112847
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1724112848}
-  m_Layer: 8
-  m_Name: Medkits
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1724112848
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1724112847}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 139753981}
-  m_Father: {fileID: 412089776}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1725468538
 GameObject:
   m_ObjectHideFlags: 0
@@ -6863,7 +6846,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

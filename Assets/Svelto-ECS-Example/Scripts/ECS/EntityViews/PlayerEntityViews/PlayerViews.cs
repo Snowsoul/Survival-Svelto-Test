@@ -41,5 +41,6 @@ namespace Svelto.ECS.Example.Survive.Player.Bonus
 	public class PlayerBonusEntitityView : EntityView
 	{
 		public IPlayerAmmoBoxComponent playerAmmoBoxComponent;
+		public IPlayerMedkitComponent playerMedkitComponent;
 	}
 }

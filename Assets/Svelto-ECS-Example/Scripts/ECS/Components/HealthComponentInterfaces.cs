@@ -7,6 +7,18 @@ namespace Svelto.ECS.Example.Survive
         int currentHealth { get; set; }
     }
 
+	public struct HealInfo
+	{
+		public int healAmmount { get; private set; }
+		public int entityHealID { get; private set; }
+
+		public HealInfo(int heal, int entity) : this()
+		{
+			healAmmount = heal;
+			entityHealID = entity;
+		}
+	}
+
     public struct DamageInfo
     {
         public int damagePerShot { get; private set; }

@@ -122,13 +122,14 @@ namespace Svelto.ECS.Example.Survive
             //between engines.
             var enemyKilledObservable = new EnemyKilledObservable();
             var scoreOnEnemyKilledObserver = new ScoreOnEnemyKilledObserver(enemyKilledObservable);
-            //the ISequencer is one of the 3 official ways available in Svelto.ECS 
-            //to communicate. They are mainly used for two specific cases:
-            //1) specify a strict execution order between engines (engine logic
-            //is executed horizontally instead than vertically, I will talk about this
-            //in my articles). 2) filter a data token passed as parameter through
-            //engines. The ISequencer is also not the common way to communicate
-            //between engines
+			//the ISequencer is one of the 3 official ways available in Svelto.ECS 
+			//to communicate. They are mainly used for two specific cases:
+			//1) specify a strict execution order between engines (engine logic
+			//is executed horizontally instead than vertically, I will talk about this
+			//in my articles). 2) filter a data token passed as parameter through
+			//engines. The ISequencer is also not the common way to communicate
+			//between engines
+			Sequencer playerHealSequence = new Sequencer();
             Sequencer playerDamageSequence = new Sequencer();
             Sequencer enemyDamageSequence = new Sequencer();
             
@@ -145,6 +146,7 @@ namespace Svelto.ECS.Example.Survive
             var playerAnimationEngine = new PlayerAnimationEngine();
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
             var playerAmmoBoxEngine = new PlayerAmmoBoxEngine();
+            var playerMedkitEngine = new PlayerMedkitEngine(playerHealSequence);
 
 			//Enemy related engines
 			var enemyAnimationEngine = new EnemyAnimationEngine(time);
@@ -212,17 +214,31 @@ namespace Svelto.ECS.Example.Survive
                 }
             );
 
-            //Mandatory step to make engines work
-            //Player engines
-            _enginesRoot.AddEngine(playerMovementEngine);
+			playerHealSequence.SetSequence(
+				new Steps
+				{
+					{
+						playerMedkitEngine,
+						new To
+						{
+							playerHealthEngine
+						}
+					}
+				}	
+			);
+
+			//Mandatory step to make engines work
+			//Player engines
+			_enginesRoot.AddEngine(playerMovementEngine);
             _enginesRoot.AddEngine(playerAnimationEngine);
             _enginesRoot.AddEngine(playerShootingEngine);
             _enginesRoot.AddEngine(playerHealthEngine);
             _enginesRoot.AddEngine(new PlayerInputEngine());
             _enginesRoot.AddEngine(new PlayerGunShootingFXsEngine());
 			_enginesRoot.AddEngine(playerAmmoBoxEngine);
-            //enemy engines
-            _enginesRoot.AddEngine(enemySpawnerEngine);
+			_enginesRoot.AddEngine(playerMedkitEngine);
+			//enemy engines
+			_enginesRoot.AddEngine(enemySpawnerEngine);
             _enginesRoot.AddEngine(enemyAttackEngine);
             _enginesRoot.AddEngine(enemyMovementEngine);
             _enginesRoot.AddEngine(enemyAnimationEngine);

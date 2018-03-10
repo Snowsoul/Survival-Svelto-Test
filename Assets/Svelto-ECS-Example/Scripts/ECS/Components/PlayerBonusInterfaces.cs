@@ -8,8 +8,8 @@ namespace Svelto.ECS.Example.Survive.Player.Bonus
 		void DestroyBox();
 	}
 
-	public interface IPlayerMedkitComponent : IComponent
+	public interface IPlayerMedkitComponent : IPlayerAmmoBoxComponent
 	{
-		bool colided { get; set; }
+		int healthBonus { get; }
 	}
 }
