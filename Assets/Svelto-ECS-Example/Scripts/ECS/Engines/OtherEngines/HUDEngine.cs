@@ -15,7 +15,7 @@ namespace Svelto.ECS.Example.Survive.HUD
     /// Therefore using the Add/Remove callbacks is not wrong, but I try to not
     /// promote their use. 
     /// </summary>
-    public class HUDEngine : IQueryingEntityViewEngine, IStep<DamageInfo>
+    public class HUDEngine : IQueryingEntityViewEngine, IStep<DamageInfo>, IStep<HealInfo>
     {
         public IEntityViewsDB entityViewsDB { set; private get; }
 
@@ -45,6 +45,23 @@ namespace Svelto.ECS.Example.Survive.HUD
                 yield return null;
             }
         }
+
+		void OnHealEvent(HealInfo healed)
+		{
+			var hudEntityViews = entityViewsDB.QueryEntityViews<HUDEntityView>();
+
+			Debug.Log("healed hud engine");
+
+			for (int i = 0; i < hudEntityViews.Count; i++)
+			{
+				var guiEntityView = hudEntityViews[i];
+
+				var hudDamageEntityView =
+					entityViewsDB.QueryEntityView<HUDDamageEntityView>(healed.entityHealID);
+
+				guiEntityView.healthSliderComponent.value = hudDamageEntityView.healthComponent.currentHealth;
+			}
+		}
 
         void OnDamageEvent(DamageInfo damaged)
         {
@@ -95,14 +112,29 @@ namespace Svelto.ECS.Example.Survive.HUD
 
         public void Step(ref DamageInfo token, int condition)
         {
-            if (condition == DamageCondition.Damage)
-                OnDamageEvent(token);
-            else
-            if (condition == DamageCondition.Dead)
-                OnDeadEvent();
+			switch (condition)
+			{
+				case DamageCondition.Damage:
+					OnDamageEvent(token);
+				break;
+
+				case DamageCondition.Dead:
+					OnDeadEvent();
+				break;
+			}
         }
 
-        readonly WaitForSecondsEnumerator  _waitForSeconds = new WaitForSecondsEnumerator(5);
+		public void Step(ref HealInfo token, int condition)
+		{
+			switch (condition)
+			{
+				case HealCondition.HealthBonus:
+					OnHealEvent(token);
+				break;
+			}
+		}
+
+		readonly WaitForSecondsEnumerator  _waitForSeconds = new WaitForSecondsEnumerator(5);
         readonly ITime                     _time;
     }
 }

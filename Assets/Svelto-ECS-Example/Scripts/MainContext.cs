@@ -140,7 +140,7 @@ namespace Svelto.ECS.Example.Survive
             
             //Player related engines. ALL the dependecies must be solved at this point
             //through constructor injection.
-            var playerHealthEngine = new HealthEngine(playerDamageSequence);
+            var playerHealthEngine = new HealthEngine(playerDamageSequence, playerHealSequence);
             var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster, time);
             var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
             var playerAnimationEngine = new PlayerAnimationEngine();
@@ -151,7 +151,7 @@ namespace Svelto.ECS.Example.Survive
 			//Enemy related engines
 			var enemyAnimationEngine = new EnemyAnimationEngine(time);
             //HealthEngine is a different object for the enemy because it uses a different sequence
-            var enemyHealthEngine = new HealthEngine(enemyDamageSequence);
+            var enemyHealthEngine = new HealthEngine(enemyDamageSequence, playerHealSequence);
             var enemyAttackEngine = new EnemyAttackEngine(playerDamageSequence, time);
             var enemyMovementEngine = new EnemyMovementEngine();
             var enemySpawnerEngine = new EnemySpawnerEngine(factory, _entityFactory);
@@ -222,6 +222,13 @@ namespace Svelto.ECS.Example.Survive
 						new To
 						{
 							playerHealthEngine
+						}
+					},
+					{
+						playerHealthEngine,
+						new To
+						{
+							{ HealCondition.HealthBonus, new IStep[] { hudEngine } }
 						}
 					}
 				}	

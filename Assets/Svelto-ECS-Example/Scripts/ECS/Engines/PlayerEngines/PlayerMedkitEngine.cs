@@ -8,9 +8,10 @@ namespace Svelto.ECS.Example.Survive.Player
 {
 	public class PlayerMedkitEngine : MultiEntityViewsEngine<HUDEntityView, PlayerBonusEntitityView>
 	{
-		public PlayerMedkitEngine(Sequencer playerHealSequence)
+		public PlayerMedkitEngine(ISequencer playerHealSequence)
 		{
 			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(UpdateTick()).SetScheduler(StandardSchedulers.updateScheduler);
+			_playerHealSequence = playerHealSequence;
 		}
 
 		IEnumerator UpdateTick()
@@ -28,6 +29,9 @@ namespace Svelto.ECS.Example.Survive.Player
 					//healthSliderComponent.value += playerMedkitComponent.healthBonus;
 					playerMedkitComponent.colided = false;
 					playerMedkitComponent.DestroyBox();
+
+					var healInfo = new HealInfo(playerMedkitComponent.healthBonus, playerMedkitComponent.id);
+					_playerHealSequence.Next(this, ref healInfo);
 				}
 
 				yield return null;
@@ -61,5 +65,6 @@ namespace Svelto.ECS.Example.Survive.Player
 		HUDEntityView _hudEntityView;
 		PlayerBonusEntitityView _playerBonusEntityView;
 		readonly ITaskRoutine _taskRoutine;
+		ISequencer _playerHealSequence;
 	}
 }

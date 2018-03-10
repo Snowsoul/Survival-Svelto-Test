@@ -5,10 +5,11 @@ namespace Svelto.ECS.Example.Survive
         public void Ready()
         { }
 
-        public HealthEngine(ISequencer damageSequence)
+        public HealthEngine(ISequencer damageSequence, ISequencer healSequence)
         {
             _damageSequence = damageSequence;
-        }
+			_healSequence = healSequence;
+		}
 
         public IEntityViewsDB entityViewsDB { set; private get; }
 
@@ -29,13 +30,17 @@ namespace Svelto.ECS.Example.Survive
 
 		public void Step(ref HealInfo heal, int condition)
 		{
+			UnityEngine.Debug.Log("heal " + heal.healAmmount);
 			// Heal Sequence Step
 			var entityView = entityViewsDB.QueryEntityView<HealthEntityView>(heal.entityHealID);
 			var healthComponent = entityView.healthComponent;
 
 			healthComponent.currentHealth += heal.healAmmount;
+
+			_healSequence.Next(this, ref heal, HealCondition.HealthBonus);
 		}
 
 		readonly ISequencer  _damageSequence;
-    }
+		readonly ISequencer  _healSequence;
+	}
 }

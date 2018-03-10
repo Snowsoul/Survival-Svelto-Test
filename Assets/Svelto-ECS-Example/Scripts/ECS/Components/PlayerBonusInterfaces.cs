@@ -11,5 +11,6 @@ namespace Svelto.ECS.Example.Survive.Player.Bonus
 	public interface IPlayerMedkitComponent : IPlayerAmmoBoxComponent
 	{
 		int healthBonus { get; }
+		int id { get; set; }
 	}
 }
