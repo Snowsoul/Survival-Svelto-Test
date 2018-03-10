@@ -974,15 +974,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 139753977}
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: -0, y: 0.38268343, z: -0, w: 0.92387956}
   m_LocalPosition: {x: 1.13, y: 0.06, z: 8.79}
   m_LocalScale: {x: 0.9220805, y: 0.24890825, z: 1.0244715}
   m_Children:
   - {fileID: 815012585}
   - {fileID: 247082725}
   - {fileID: 672088359}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 1724112848}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1 &208664229
 GameObject:
@@ -1888,6 +1888,7 @@ Transform:
   m_Children:
   - {fileID: 1139190134}
   - {fileID: 87904142}
+  - {fileID: 1724112848}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2446,7 +2447,7 @@ Transform:
   - {fileID: 1689806095}
   - {fileID: 1307954806}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &619430208
 MonoBehaviour:
@@ -3559,6 +3560,10 @@ Prefab:
     - target: {fileID: 1690083886921830, guid: ec862c0e35cdd114580558dad437f3d8, type: 2}
       propertyPath: m_Name
       value: VFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 1690083886921830, guid: ec862c0e35cdd114580558dad437f3d8, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ec862c0e35cdd114580558dad437f3d8, type: 2}
@@ -6239,6 +6244,35 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1712414649}
+--- !u!1 &1724112847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1724112848}
+  m_Layer: 8
+  m_Name: Medkits
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1724112848
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1724112847}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 139753981}
+  m_Father: {fileID: 412089776}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1725468538
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,9 +15,13 @@ namespace Svelto.ECS.Example.Survive.Player
 		void OnTriggerEnter(Collider other)
 		{
 			if (other.tag == "Player")
-			{
 				colided = true;
-			}
+		}
+
+		void OnTriggerExit(Collider other)
+		{
+			if (other.tag == "Player")
+				colided = false;
 		}
 
 		bool _colided = false;
