@@ -997,6 +997,7 @@ GameObject:
   - component: {fileID: 223470700}
   - component: {fileID: 223470702}
   - component: {fileID: 223470701}
+  - component: {fileID: 223470703}
   m_Layer: 5
   m_Name: BulletsPanel
   m_TagString: Untagged
@@ -1065,6 +1066,28 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 223470699}
+--- !u!114 &223470703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 223470699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa7dcd4ca18ada4cb8e23cd9d418048, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullets:
+  - {fileID: 1306909051}
+  - {fileID: 861903859}
+  - {fileID: 978575348}
+  - {fileID: 1107794021}
+  - {fileID: 11301706}
+  - {fileID: 458014423}
+  - {fileID: 279140910}
+  - {fileID: 709692482}
+  - {fileID: 884472433}
+  - {fileID: 1837687837}
 --- !u!1 &229282096
 GameObject:
   m_ObjectHideFlags: 0
