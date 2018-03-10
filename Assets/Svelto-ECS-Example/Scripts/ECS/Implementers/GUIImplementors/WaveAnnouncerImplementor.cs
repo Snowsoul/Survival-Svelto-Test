@@ -1,4 +1,6 @@
 ﻿using Svelto.ECS.Example.Survive.HUD;
+using Svelto.Tasks.Enumerators;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,16 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 			set {
 				_secondsRemaining = value;
 				_text.text = "Wave comming in " + _secondsRemaining + " seconds";
+
+				if (_secondsRemaining == 1)
+					HideTextAfterOneSecond(_text).Run();
 			}
+		}
+
+		IEnumerator HideTextAfterOneSecond(Text text)
+		{
+			yield return new WaitForSeconds(1);
+			text.enabled = false;
 		}
 
 		void Awake()
@@ -24,7 +35,7 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 		}
 
 		int _secondsRemaining;
-		int _initialSecondsRemaining = 3;
+		int _initialSecondsRemaining = 5;
 
 		Text _text;
 	}

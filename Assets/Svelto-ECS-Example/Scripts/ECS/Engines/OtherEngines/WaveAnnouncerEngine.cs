@@ -23,11 +23,11 @@ namespace Svelto.ECS.Example.Survive.HUD
 				}
 				else
 				{
+					_guiEntityView.enemiesLeftComponent.isEnabled = true;
+
 					yield return null;
 					break;
 				}
-
-				Debug.Log("timer");
 			}
 		}
 

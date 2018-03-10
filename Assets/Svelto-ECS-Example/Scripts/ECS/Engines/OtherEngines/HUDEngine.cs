@@ -54,9 +54,10 @@ namespace Svelto.ECS.Example.Survive.HUD
         void OnDeadEvent()
         {
             var hudEntityViews = entityViewsDB.QueryEntityViews<HUDEntityView>();
-            for (int i = 0; i < hudEntityViews.Count; i++)
-                hudEntityViews[i].healthSliderComponent.value = 0;
-
+			for (int i = 0; i < hudEntityViews.Count; i++)
+			{
+				hudEntityViews[i].healthSliderComponent.value = 0;
+			}
             RestartLevelAfterFewSeconds().Run();
         }
 

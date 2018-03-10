@@ -2,10 +2,11 @@ using System.Collections;
 using UnityEngine;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.Tasks;
+using Svelto.ECS.Example.Survive.HUD;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
-    public class PlayerGunShootingEngine : MultiEntityViewsEngine<GunEntityView, PlayerEntityView>, 
+    public class PlayerGunShootingEngine : MultiEntityViewsEngine<GunEntityView, PlayerEntityView, HUDEntityView>, 
         IQueryingEntityViewEngine, IStep<DamageInfo>
     {
         public IEntityViewsDB entityViewsDB { set; private get; }
@@ -25,7 +26,17 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                                                .SetScheduler(StandardSchedulers.physicScheduler);
         }
 
-        protected override void Add(GunEntityView entityView)
+		protected override void Add(HUDEntityView entityView)
+		{
+			_hudEntityView = entityView;
+		}
+
+		protected override void Remove(HUDEntityView entityView)
+		{
+			_hudEntityView = null;
+		}
+
+		protected override void Add(GunEntityView entityView)
         {
             _playerGunEntityView = entityView;
         }
@@ -65,16 +76,28 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             }
         }
 
+		void UpdateBulletsHUD()
+		{
+			_hudEntityView.bulletsManagerComponent.RemoveBullet();
+		}
+
         void Shoot(GunEntityView playerGunEntityView)
         {
             var playerGunComponent    = playerGunEntityView.gunComponent;
             var playerGunHitComponent = playerGunEntityView.gunHitTargetComponent;
+			var bulletsManagerComponent = _hudEntityView.bulletsManagerComponent;
 
-            playerGunComponent.timer = 0;
+			// If the player doesn't have enough bullets then don't shoot anymore
+			if (!bulletsManagerComponent.HasEnoughBullets())
+				return;
 
+			playerGunComponent.timer = 0;
+dw
             Vector3 point;
             var     entityHit = _rayCaster.CheckHit(playerGunComponent.shootRay, playerGunComponent.range, ENEMY_LAYER, SHOOTABLE_MASK | ENEMY_MASK, out point);
-            
+
+			UpdateBulletsHUD();
+
             if (entityHit != -1)
             {
                 PlayerTargetEntityView targetComponent;
@@ -120,6 +143,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
         PlayerEntityView _playerEntityView;
         GunEntityView    _playerGunEntityView;
+		HUDEntityView _hudEntityView;
         
         readonly ITime _time;
         readonly ITaskRoutine     _taskRoutine;

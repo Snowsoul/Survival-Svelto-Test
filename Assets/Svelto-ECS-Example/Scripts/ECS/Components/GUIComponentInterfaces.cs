@@ -23,4 +23,16 @@ namespace Svelto.ECS.Example.Survive.HUD
 	{
 		int secondsRemaining { set; get; }
 	}
+
+	public interface IEnemiesLeftComponent : IComponent
+	{
+		bool isEnabled { set; get; }
+		int enemies { set; get; }
+	}
+	public interface IBulletsManagerComponent : IComponent
+	{
+		bool HasEnoughBullets();
+		void RemoveBullet();
+		void ResetBullets();
+	}
 }
