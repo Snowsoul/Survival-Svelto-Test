@@ -92,7 +92,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 				return;
 
 			playerGunComponent.timer = 0;
-dw
+
             Vector3 point;
             var     entityHit = _rayCaster.CheckHit(playerGunComponent.shootRay, playerGunComponent.range, ENEMY_LAYER, SHOOTABLE_MASK | ENEMY_MASK, out point);
 
