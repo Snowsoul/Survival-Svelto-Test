@@ -18,4 +18,9 @@ namespace Svelto.ECS.Example.Survive.HUD
     {
         int score { set; get; }
     }
+
+	public interface IWaveWaitingTimeComponent: IComponent
+	{
+		int secondsRemaining { set; get; }
+	}
 }
