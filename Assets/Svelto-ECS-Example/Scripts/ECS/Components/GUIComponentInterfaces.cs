@@ -31,6 +31,8 @@ namespace Svelto.ECS.Example.Survive.HUD
 	}
 	public interface IBulletsManagerComponent : IComponent
 	{
+		int currentBullets { set; get; }
+		int totalBullets { set; get; }
 		bool HasEnoughBullets();
 		void RemoveBullet();
 		void ResetBullets();

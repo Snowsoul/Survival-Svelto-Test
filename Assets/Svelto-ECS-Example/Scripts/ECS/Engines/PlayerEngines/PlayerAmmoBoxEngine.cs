@@ -20,10 +20,15 @@ namespace Svelto.ECS.Example.Survive.Player
 				var playerAmmoBoxComponent = _playerBonusEntityView.playerAmmoBoxComponent;
 				var bulletsManagerComponent = _hudEntityView.bulletsManagerComponent;
 
-				if(playerAmmoBoxComponent.colided)
+				// If the player colided with the ammo box and he doesn't have all the bullets then reset his bullets
+				// to the initial bullets count
+
+				if(playerAmmoBoxComponent.colided 
+					&& bulletsManagerComponent.currentBullets < bulletsManagerComponent.totalBullets)
 				{
 					bulletsManagerComponent.ResetBullets();
 					playerAmmoBoxComponent.colided = false;
+					playerAmmoBoxComponent.DestroyBox();
 				}
 
 				yield return null;

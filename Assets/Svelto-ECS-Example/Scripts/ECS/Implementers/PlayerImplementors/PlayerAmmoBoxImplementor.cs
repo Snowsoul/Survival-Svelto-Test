@@ -7,12 +7,16 @@ namespace Svelto.ECS.Example.Survive.Player
 	{
 		public bool colided { get { return _colided; } set { _colided = value; } }
 
+		public void DestroyBox()
+		{
+			Destroy(gameObject);
+		}
+
 		void OnTriggerEnter(Collider other)
 		{
 			if (other.tag == "Player")
 			{
 				colided = true;
-				Destroy(this.gameObject);
 			}
 		}
 

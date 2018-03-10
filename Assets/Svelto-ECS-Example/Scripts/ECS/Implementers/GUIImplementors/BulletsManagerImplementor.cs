@@ -6,11 +6,22 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 {
 	public class BulletsManagerImplementor : MonoBehaviour, IImplementor, IBulletsManagerComponent
 	{
-		int currentBullets {
+
+		void Awake()
+		{
+			_currentBullets = _totalBullets;
+		}
+
+		public int totalBullets
+		{
+			get { return _totalBullets; }
+			set { _totalBullets = value; }
+		}
+
+		public int currentBullets
+		{
 			get { return _currentBullets; }
-			set {
-				_currentBullets = value;
-			}
+			set { _currentBullets = value; }
 		}
 
 		public bool HasEnoughBullets()
@@ -38,7 +49,8 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 		}
 
 
-		int _currentBullets = 10;
+		int _totalBullets = 10;
+		int _currentBullets;
 		public Image[] bullets;
 	}
 }
