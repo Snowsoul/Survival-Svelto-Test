@@ -4,6 +4,6 @@ using UnityEngine;
 namespace Svelto.ECS.Example.Survive.Player
 {
 	[DisallowMultipleComponent]
-	public class PlayerBonusEntityDescriptorHolder : GenericEntityDescriptorHolder<GenericEntityDescriptor<PlayerBonusEntitityView>>
+	public class PlayerBonusEntityDescriptorHolder : GenericEntityDescriptorHolder<GenericEntityDescriptor<PlayerAmmoboxEntityView>>
 	{ }
 }

@@ -2,23 +2,28 @@
 using Svelto.ECS.Example.Survive.Player.Bonus;
 using Svelto.Tasks;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-	public class PlayerMedkitEngine : MultiEntityViewsEngine<HUDEntityView, PlayerBonusEntitityView>
+	public class PlayerMedkitEngine : MultiEntityViewsEngine<HUDEntityView, PlayerAmmoboxEntityView, PlayerMedkitEntityView>, IEngine
 	{
 		public PlayerMedkitEngine(ISequencer playerHealSequence)
 		{
-			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(UpdateTick()).SetScheduler(StandardSchedulers.updateScheduler);
 			_playerHealSequence = playerHealSequence;
 		}
 
-		IEnumerator UpdateTick()
+		IEnumerator UpdateTick(int spawnerID)
 		{
 			while (true)
 			{
-				var playerMedkitComponent = _playerBonusEntityView.playerMedkitComponent;
+				var playerMedkitEntityView = _playerMedkitEntityViews[spawnerID];
+
+				if (playerMedkitEntityView == null)
+					yield return null;
+
+				var playerMedkitComponent = playerMedkitEntityView.playerMedkitComponent;
 				var healthSliderComponent = _hudEntityView.healthSliderComponent;
 
 				// If the player colided with the ammo box and he doesn't have all the bullets then reset his bullets
@@ -38,16 +43,15 @@ namespace Svelto.ECS.Example.Survive.Player
 			}
 		}
 
-		protected override void Add(PlayerBonusEntitityView entityView)
+		protected override void Add(PlayerAmmoboxEntityView entityView)
 		{
-			_playerBonusEntityView = entityView;
-			_taskRoutine.Start();
+			_playerAmmoboxEntityView = entityView;
 		}
 
-		protected override void Remove(PlayerBonusEntitityView entityView)
+		protected override void Remove(PlayerAmmoboxEntityView entityView)
 		{
 			_taskRoutine.Stop();
-			_playerBonusEntityView = null;
+			_playerAmmoboxEntityView = null;
 		}
 
 		protected override void Add(HUDEntityView entityView)
@@ -60,11 +64,27 @@ namespace Svelto.ECS.Example.Survive.Player
 			_hudEntityView = null;
 		}
 
-		
+		protected override void Add(PlayerMedkitEntityView entityView)
+		{
+			_playerMedkitEntityViews.Add(entityView);
+
+			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine()
+				.SetEnumerator(UpdateTick(_playerMedkitEntityViews.Count - 1))
+				.SetScheduler(StandardSchedulers.updateScheduler);
+
+			_taskRoutine.Start();
+
+		}
+
+		protected override void Remove(PlayerMedkitEntityView entityView)
+		{
+			_playerMedkitEntityViews = null;
+		}
 
 		HUDEntityView _hudEntityView;
-		PlayerBonusEntitityView _playerBonusEntityView;
-		readonly ITaskRoutine _taskRoutine;
+		PlayerAmmoboxEntityView _playerAmmoboxEntityView;
+		List<PlayerMedkitEntityView> _playerMedkitEntityViews = new List<PlayerMedkitEntityView>();
+		ITaskRoutine _taskRoutine;
 		ISequencer _playerHealSequence;
 	}
 }

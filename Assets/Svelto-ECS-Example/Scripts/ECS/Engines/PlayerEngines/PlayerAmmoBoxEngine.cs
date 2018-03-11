@@ -2,22 +2,24 @@
 using Svelto.ECS.Example.Survive.Player.Bonus;
 using Svelto.Tasks;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-	public class PlayerAmmoBoxEngine : MultiEntityViewsEngine<HUDEntityView, PlayerBonusEntitityView>
+	public class PlayerAmmoBoxEngine : MultiEntityViewsEngine<HUDEntityView, PlayerAmmoboxEntityView>
 	{
 		public PlayerAmmoBoxEngine()
 		{
-			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(UpdateTick()).SetScheduler(StandardSchedulers.updateScheduler);
+			
 		}
 
-		IEnumerator UpdateTick()
+		IEnumerator UpdateTick(int entityID)
 		{
 			while (true)
 			{
-				var playerAmmoBoxComponent = _playerBonusEntityView.playerAmmoBoxComponent;
+				var playerBonusEntityView = _playerBonusEntityViews[entityID];
+				var playerAmmoBoxComponent = playerBonusEntityView.playerAmmoBoxComponent;
 				var bulletsManagerComponent = _hudEntityView.bulletsManagerComponent;
 
 				// If the player colided with the ammo box and he doesn't have all the bullets then reset his bullets
@@ -35,16 +37,21 @@ namespace Svelto.ECS.Example.Survive.Player
 			}
 		}
 
-		protected override void Add(PlayerBonusEntitityView entityView)
+		protected override void Add(PlayerAmmoboxEntityView entityView)
 		{
-			_playerBonusEntityView = entityView;
+			_playerBonusEntityViews.Add(entityView);
+
+			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine()
+				.SetEnumerator(UpdateTick(_playerBonusEntityViews.Count -1))
+				.SetScheduler(StandardSchedulers.updateScheduler);
+
 			_taskRoutine.Start();
 		}
 
-		protected override void Remove(PlayerBonusEntitityView entityView)
+		protected override void Remove(PlayerAmmoboxEntityView entityView)
 		{
 			_taskRoutine.Stop();
-			_playerBonusEntityView = null;
+			_playerBonusEntityViews = null;
 		}
 
 		protected override void Add(HUDEntityView entityView)
@@ -60,7 +67,7 @@ namespace Svelto.ECS.Example.Survive.Player
 		
 
 		HUDEntityView _hudEntityView;
-		PlayerBonusEntitityView _playerBonusEntityView;
-		readonly ITaskRoutine _taskRoutine;
+		List<PlayerAmmoboxEntityView> _playerBonusEntityViews = new List<PlayerAmmoboxEntityView>();
+		ITaskRoutine _taskRoutine;
 	}
 }

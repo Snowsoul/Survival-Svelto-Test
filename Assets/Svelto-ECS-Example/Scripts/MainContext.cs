@@ -165,6 +165,9 @@ namespace Svelto.ECS.Example.Survive
 			var hudEngine = new HUDEngine(time);
 			var damageSoundEngine = new DamageSoundEngine();
 
+			// Bonus spawner engine
+			var bonusSpawnerEngine = new BonusSpawnerEngine(factory, _entityFactory);
+
 			//The ISequencer implementaton is very simple, but allows to perform
 			//complex concatenation including loops and conditional branching.
 			playerDamageSequence.SetSequence(
@@ -275,6 +278,8 @@ namespace Svelto.ECS.Example.Survive
 			_enginesRoot.AddEngine(hudEngine);
 			_enginesRoot.AddEngine(new ScoreEngine(scoreOnEnemyKilledObserver));
 			_enginesRoot.AddEngine(new WaveAnnouncerEngine());
+			_enginesRoot.AddEngine(bonusSpawnerEngine);
+			
 		}
 
 		/// <summary>
@@ -291,7 +296,22 @@ namespace Svelto.ECS.Example.Survive
 			//using the entityFactory; You can, if you wish, create
 			//starting entities here.
 			BuildPlayerEntities(prefabsDictionary);
+			BuildBonusSpawnerEntity(contextHolder);
 			BuildCameraEntity();
+		}
+		
+		void BuildBonusSpawnerEntity(UnityContext contextHolder)
+		{
+
+			var spawners = contextHolder.GetComponentsInChildren<BonusSpawnerImplementor>();
+
+
+			foreach (var spawner in spawners)
+			{
+				List<IImplementor> implementors = new List<IImplementor>();
+				spawner.GetComponents(implementors);
+				_entityFactory.BuildEntity<BonusSpawnerEntityDescriptor>(spawner.GetInstanceID(), implementors.ToArray());
+			}
 		}
 
 		void BuildPlayerEntities(PrefabsDictionary prefabsDictionary)
