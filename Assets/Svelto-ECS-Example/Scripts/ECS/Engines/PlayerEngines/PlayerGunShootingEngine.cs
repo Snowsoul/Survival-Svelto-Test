@@ -4,6 +4,7 @@ using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.Tasks;
 using Svelto.ECS.Example.Survive.HUD;
 using Svelto.Factories;
+using System.Collections.Generic;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
@@ -17,7 +18,9 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             _taskRoutine.Start();
         }
         
-        public PlayerGunShootingEngine(EnemyKilledObservable enemyKilledObservable, ISequencer damageSequence, IRayCaster rayCaster, ITime time, Factories.IGameObjectFactory gameobjectFactory)
+        public PlayerGunShootingEngine(EnemyKilledObservable enemyKilledObservable, ISequencer damageSequence, 
+			IRayCaster rayCaster, ITime time, Factories.IGameObjectFactory gameobjectFactory, 
+			ISequencer grenadeDropSequence, IEntityFactory entityFactory)
         {
             _enemyKilledObservable = enemyKilledObservable;
             _enemyDamageSequence   = damageSequence;
@@ -26,7 +29,8 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             _taskRoutine           = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(Tick())
                                                .SetScheduler(StandardSchedulers.physicScheduler);
 			_gameObjectFactory = gameobjectFactory;
-        }
+			_entityFactory = entityFactory;
+		}
 
 		protected override void Add(HUDEntityView entityView)
 		{
@@ -81,15 +85,41 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             }
         }
 
+		IEnumerator ResetGrenadeCooldownAfterTime()
+		{
+			yield return new WaitForSeconds(2f);
+
+			var grenadeSpawnerComponent = _playerGunEntityView.grenadeSpawnerComponent;
+			grenadeSpawnerComponent.grenadeCooldown = false;
+		}
+
 		void LaunchGrenade()
 		{
-			Debug.Log("Launch Grenade");
+			var grenadeSpawnerComponent = _playerGunEntityView.grenadeSpawnerComponent;
+			//var grenadeComponent = _playerGunEntityView.grenadeComponent;
 
-			var grenadeComponent = _playerGunEntityView.grenadeComponent;
-			var go = _gameObjectFactory.Build(grenadeComponent.grenadePrefab);
+			if (!grenadeSpawnerComponent.grenadeCooldown)
+			{
+				var go = _gameObjectFactory.Build(grenadeSpawnerComponent.grenadePrefab);
+				//grenadeComponent.instance = go;
 
-			go.transform.position = grenadeComponent.position;
-			go.transform.rotation = Quaternion.identity;
+				List<IImplementor> implementors = new List<IImplementor>();
+
+				//go.GetComponentsInChildren(implementors);
+
+				implementors.Add(new PlayerGrenadeImplementor());
+
+				//_entityFactory.BuildEntity<PlayerGunEntityDescriptor>(
+				//			   go.GetInstanceID(), implementors.ToArray());
+
+				//grenadeComponent.spawned = true;
+				grenadeSpawnerComponent.grenadeCooldown = true;
+
+				go.transform.position = grenadeSpawnerComponent.position;
+				go.transform.rotation = Quaternion.identity;
+
+				ResetGrenadeCooldownAfterTime().Run();
+			}
 		}
 
 		void UpdateBulletsHUD()
@@ -164,6 +194,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         readonly ITime _time;
         readonly ITaskRoutine     _taskRoutine;
 		readonly IGameObjectFactory _gameObjectFactory;
+		private readonly IEntityFactory _entityFactory;
 		static readonly int SHOOTABLE_MASK = LayerMask.GetMask("Shootable");
         static readonly int ENEMY_MASK     = LayerMask.GetMask("Enemies");
         static readonly int ENEMY_LAYER    = LayerMask.NameToLayer("Enemies");

@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 135540799618130508}
   - component: {fileID: 54838565612870410}
   - component: {fileID: 114607299569607160}
+  - component: {fileID: 114843616704321268}
   m_Layer: 9
   m_Name: Grenade
   m_TagString: Untagged
@@ -406,9 +407,20 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1545433223790620}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62f95afad647011459c98a85faa79815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114843616704321268
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1545433223790620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaeac26a6f95163479746039dc08761d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!135 &135540799618130508
@@ -445,9 +457,9 @@ ParticleSystem:
   lengthInSec: 2
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 0
   useRigidbodyForVelocity: 1

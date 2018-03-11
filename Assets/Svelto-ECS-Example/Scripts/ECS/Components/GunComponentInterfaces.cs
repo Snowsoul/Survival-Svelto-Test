@@ -30,7 +30,24 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
 	public interface IGrenadeComponent : IComponent
 	{
+		bool spawned { set; get; }
+		GameObject instance { set; get; }
+	}
+
+	public interface IGrenadeFXComponent : IComponent
+	{
+		bool play { set; }
+	}
+
+	public interface IGrenadeLightComponent : IComponent
+	{
+		bool enabled { set; get; }
+	}
+
+	public interface IGrenadeSpawnerComponent : IComponent
+	{
 		GameObject grenadePrefab { get; set; }
 		Vector3 position { get; }
+		bool grenadeCooldown { get; set; }
 	}
 }

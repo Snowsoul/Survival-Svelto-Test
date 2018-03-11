@@ -34,7 +34,8 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         public IGunAttributesComponent   gunComponent;
         public IGunFXComponent           gunFXComponent;
         public IGunHitTargetComponent    gunHitTargetComponent;
-		public IGrenadeComponent         grenadeComponent;
+		//public IGrenadeComponent		 grenadeComponent;
+		public IGrenadeSpawnerComponent  grenadeSpawnerComponent;
     }
 }
 
@@ -43,6 +44,6 @@ namespace Svelto.ECS.Example.Survive.Player.Bonus
 	public class PlayerBonusEntitityView : EntityView
 	{
 		public IPlayerAmmoBoxComponent playerAmmoBoxComponent;
-		public IPlayerMedkitComponent playerMedkitComponent;
+		public IPlayerMedkitComponent  playerMedkitComponent;
 	}
 }

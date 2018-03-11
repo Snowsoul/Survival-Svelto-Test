@@ -30,7 +30,7 @@ namespace Svelto.ECS.Example.Survive.Player
 		}
 
 		bool _colided = false;
-		int _healthBonus = 10;
+		int _healthBonus = 50;
 		int _id;
 	}
 }
