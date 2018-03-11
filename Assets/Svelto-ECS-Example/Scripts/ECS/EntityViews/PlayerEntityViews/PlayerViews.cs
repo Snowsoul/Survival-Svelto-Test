@@ -18,6 +18,7 @@ namespace Svelto.ECS.Example.Survive.Player
         Vector3 input { get; set; }
         Ray camRay { get; set; }
         bool fire { get; set; }
+		bool rmb { get; set; }
     }
 
     public class PlayerTargetEntityView : EntityView
@@ -33,6 +34,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         public IGunAttributesComponent   gunComponent;
         public IGunFXComponent           gunFXComponent;
         public IGunHitTargetComponent    gunHitTargetComponent;
+		public IGrenadeComponent         grenadeComponent;
     }
 }
 

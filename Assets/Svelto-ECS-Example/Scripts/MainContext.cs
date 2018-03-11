@@ -141,7 +141,7 @@ namespace Svelto.ECS.Example.Survive
             //Player related engines. ALL the dependecies must be solved at this point
             //through constructor injection.
             var playerHealthEngine = new HealthEngine(playerDamageSequence, playerHealSequence);
-            var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster, time);
+            var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster, time, factory);
             var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
             var playerAnimationEngine = new PlayerAnimationEngine();
             var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
@@ -301,7 +301,8 @@ namespace Svelto.ECS.Example.Survive
             //unluckily the gun is parented in the original prefab, so there is no easy way to create it
             //explicitly, I have to create if from the existing gameobject.
             var gun = player.GetComponentInChildren<PlayerShootingImplementor>();
-            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(gun.gameObject.GetInstanceID(), new object[] {gun});
+			var grenade = player.GetComponentInChildren<PlayerGrenadeImplementor>();
+            _entityFactory.BuildEntity<PlayerGunEntityDescriptor>(gun.gameObject.GetInstanceID(), new object[] {gun, grenade });
         }
 
         void BuildCameraEntity()

@@ -26,6 +26,16 @@ namespace Svelto.ECS.Example.Survive.Player
                 _playerEntityView.inputComponent.input = new Vector3(h, 0f, v);
                 _playerEntityView.inputComponent.camRay = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
                 _playerEntityView.inputComponent.fire = Input.GetButton("Fire1");
+
+				if (Input.GetButtonDown("Fire2"))
+				{
+					_playerEntityView.inputComponent.rmb = true;
+				}
+
+				if (Input.GetButtonUp("Fire2"))
+				{
+					_playerEntityView.inputComponent.rmb = false;
+				}
                 
                 yield return null;
             }

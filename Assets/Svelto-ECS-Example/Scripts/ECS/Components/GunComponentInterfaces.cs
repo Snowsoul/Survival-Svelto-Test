@@ -27,4 +27,10 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         bool    lightEnabled       { set; }
         bool    playAudio          { set; }
     }
+
+	public interface IGrenadeComponent : IComponent
+	{
+		GameObject grenadePrefab { get; set; }
+		Vector3 position { get; }
+	}
 }

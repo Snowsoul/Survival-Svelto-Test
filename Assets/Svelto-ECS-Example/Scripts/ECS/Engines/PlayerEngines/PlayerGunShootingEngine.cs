@@ -3,6 +3,7 @@ using UnityEngine;
 using Svelto.ECS.Example.Survive.Enemies;
 using Svelto.Tasks;
 using Svelto.ECS.Example.Survive.HUD;
+using Svelto.Factories;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
@@ -16,7 +17,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             _taskRoutine.Start();
         }
         
-        public PlayerGunShootingEngine(EnemyKilledObservable enemyKilledObservable, ISequencer damageSequence, IRayCaster rayCaster, ITime time)
+        public PlayerGunShootingEngine(EnemyKilledObservable enemyKilledObservable, ISequencer damageSequence, IRayCaster rayCaster, ITime time, Factories.IGameObjectFactory gameobjectFactory)
         {
             _enemyKilledObservable = enemyKilledObservable;
             _enemyDamageSequence   = damageSequence;
@@ -24,6 +25,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             _time                  = time;
             _taskRoutine           = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(Tick())
                                                .SetScheduler(StandardSchedulers.physicScheduler);
+			_gameObjectFactory = gameobjectFactory;
         }
 
 		protected override void Add(HUDEntityView entityView)
@@ -72,9 +74,23 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
                     playerGunComponent.timer >= _playerGunEntityView.gunComponent.timeBetweenBullets)
                     Shoot(_playerGunEntityView);
 
+				if (_playerEntityView.inputComponent.rmb)
+					LaunchGrenade();
+
                 yield return null;
             }
         }
+
+		void LaunchGrenade()
+		{
+			Debug.Log("Launch Grenade");
+
+			var grenadeComponent = _playerGunEntityView.grenadeComponent;
+			var go = _gameObjectFactory.Build(grenadeComponent.grenadePrefab);
+
+			go.transform.position = grenadeComponent.position;
+			go.transform.rotation = Quaternion.identity;
+		}
 
 		void UpdateBulletsHUD()
 		{
@@ -147,8 +163,8 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         
         readonly ITime _time;
         readonly ITaskRoutine     _taskRoutine;
-
-        static readonly int SHOOTABLE_MASK = LayerMask.GetMask("Shootable");
+		readonly IGameObjectFactory _gameObjectFactory;
+		static readonly int SHOOTABLE_MASK = LayerMask.GetMask("Shootable");
         static readonly int ENEMY_MASK     = LayerMask.GetMask("Enemies");
         static readonly int ENEMY_LAYER    = LayerMask.NameToLayer("Enemies");
     }
