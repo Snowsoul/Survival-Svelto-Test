@@ -20,7 +20,7 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         
         public PlayerGunShootingEngine(EnemyKilledObservable enemyKilledObservable, ISequencer damageSequence, 
 			IRayCaster rayCaster, ITime time, Factories.IGameObjectFactory gameobjectFactory, 
-			ISequencer grenadeDropSequence, IEntityFactory entityFactory)
+			IEntityFactory entityFactory)
         {
             _enemyKilledObservable = enemyKilledObservable;
             _enemyDamageSequence   = damageSequence;
@@ -191,7 +191,6 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
 		protected override void Add(GrenadeEntityView entityView)
 		{
-			Debug.Log("add grenade?");
 			_grenadeEntityView = entityView;
 			var grenadeComponent = _grenadeEntityView.grenadeComponent;
 

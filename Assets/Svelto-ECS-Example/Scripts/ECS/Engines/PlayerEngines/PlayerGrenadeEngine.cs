@@ -7,11 +7,6 @@ namespace Svelto.ECS.Example.Survive.Player
 {
     public class PlayerGrenadeEngine: MultiEntityViewsEngine<GunEntityView, GrenadeEntityView>, IEngine
     {
-        public PlayerGrenadeEngine(ISequencer playerGrenadeDropSequence)
-        {
-			
-		}
-
 		IEnumerator UpdateTick()
 		{
 			while(true)

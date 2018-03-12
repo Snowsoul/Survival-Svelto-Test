@@ -131,7 +131,6 @@ namespace Svelto.ECS.Example.Survive
 			//between engines
 			Sequencer playerHealSequence = new Sequencer();
 			Sequencer playerDamageSequence = new Sequencer();
-			Sequencer playerGrenadeDropSequence = new Sequencer();
 			Sequencer enemyDamageSequence = new Sequencer();
 
 
@@ -144,13 +143,13 @@ namespace Svelto.ECS.Example.Survive
 			//through constructor injection.
 			var playerHealthEngine = new HealthEngine(playerDamageSequence, playerHealSequence);
 			var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster, 
-				time, factory, playerGrenadeDropSequence, _entityFactory);
+				time, factory, _entityFactory);
 			var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
 			var playerAnimationEngine = new PlayerAnimationEngine();
 			var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
 			var playerAmmoBoxEngine = new PlayerAmmoBoxEngine();
 			var playerMedkitEngine = new PlayerMedkitEngine(playerHealSequence);
-			var playerGrenadeEngine = new PlayerGrenadeEngine(playerGrenadeDropSequence);
+			var playerGrenadeEngine = new PlayerGrenadeEngine();
 
 			//Enemy related engines
 			var enemyAnimationEngine = new EnemyAnimationEngine(time);
@@ -240,19 +239,6 @@ namespace Svelto.ECS.Example.Survive
 					}
 				}
 			);
-
-			//playerGrenadeDropSequence.SetSequence(
-			//	new Steps
-			//	{
-			//		{
-			//			playerGrenadeEngine,
-			//			new To
-			//			{
-			//				{ new IStep[] { hudEngine } }
-			//			}
-			//		}
-			//	}
-			//);
 
 			//Mandatory step to make engines work
 			//Player engines

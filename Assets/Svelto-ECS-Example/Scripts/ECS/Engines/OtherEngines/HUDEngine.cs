@@ -50,8 +50,6 @@ namespace Svelto.ECS.Example.Survive.HUD
 		{
 			var hudEntityViews = entityViewsDB.QueryEntityViews<HUDEntityView>();
 
-			Debug.Log("healed hud engine");
-
 			for (int i = 0; i < hudEntityViews.Count; i++)
 			{
 				var guiEntityView = hudEntityViews[i];
