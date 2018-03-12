@@ -30,12 +30,14 @@ namespace Svelto.ECS.Example.Survive
 
 		public void Step(ref HealInfo heal, int condition)
 		{
-			UnityEngine.Debug.Log("heal " + heal.healAmmount.ToString() + " " + heal.entityHealID.ToString());
 			// Heal Sequence Step
 			var entityView = entityViewsDB.QueryEntityView<HealthEntityView>(heal.entityHealID);
 			var healthComponent = entityView.healthComponent;
 
-			healthComponent.currentHealth += heal.healAmmount;
+			// Limit the heal to the max health of the player
+			healthComponent.currentHealth = (heal.healAmmount + healthComponent.currentHealth > healthComponent.maxHealth)
+											? healthComponent.maxHealth
+											: healthComponent.currentHealth + heal.healAmmount;
 
 			_healSequence.Next(this, ref heal, HealCondition.HealthBonus);
 		}

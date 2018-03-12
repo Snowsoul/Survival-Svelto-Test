@@ -7,13 +7,15 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-	public class PlayerMedkitEngine : MultiEntityViewsEngine<HUDEntityView, PlayerAmmoboxEntityView, PlayerMedkitEntityView>, IEngine
+	public class PlayerMedkitEngine : MultiEntityViewsEngine<HUDEntityView, PlayerAmmoboxEntityView, PlayerMedkitEntityView>, IQueryingEntityViewEngine, IEngine
 	{
 		public PlayerMedkitEngine(ISequencer playerHealSequence, ISequencer playerPickupSequence)
 		{
 			_playerHealSequence = playerHealSequence;
 			_playerPickupSequence = playerPickupSequence;
 		}
+
+		public IEntityViewsDB entityViewsDB { set; private get; }
 
 		IEnumerator UpdateTick(int spawnerID)
 		{
@@ -30,16 +32,25 @@ namespace Svelto.ECS.Example.Survive.Player
 
 				if(playerMedkitComponent.colided)
 				{
-					//healthSliderComponent.value += playerMedkitComponent.healthBonus;
+					var entityView = entityViewsDB.QueryEntityView<HealthEntityView>(playerMedkitComponent.instanceID);
+					var playerHealthComponent = entityView.healthComponent;
+
+					// Don't destroy the health pack and don't heal the player if he is full hp
+
+					if (playerHealthComponent.currentHealth < playerHealthComponent.maxHealth)
+					{
+
+						var healInfo = new HealInfo(playerMedkitComponent.healthBonus, playerMedkitComponent.instanceID);
+						_playerHealSequence.Next(this, ref healInfo);
+
+						playerMedkitComponent.DestroyBox();
+
+						var pickupInfo = new PickupInfo(playerMedkitComponent.id, SpawnerTypes.Medkit);
+						_playerPickupSequence.Next(this, ref pickupInfo);
+					}
+
 					playerMedkitComponent.colided = false;
 
-					var healInfo = new HealInfo(playerMedkitComponent.healthBonus, playerMedkitComponent.instanceID);
-					_playerHealSequence.Next(this, ref healInfo);
-
-					playerMedkitComponent.DestroyBox();
-
-					var pickupInfo = new PickupInfo(playerMedkitComponent.id, SpawnerTypes.Medkit);
-					_playerPickupSequence.Next(this, ref pickupInfo);
 
 				}
 
@@ -83,6 +94,10 @@ namespace Svelto.ECS.Example.Survive.Player
 		protected override void Remove(PlayerMedkitEntityView entityView)
 		{
 			_playerMedkitEntityViews = null;
+		}
+
+		public void Ready()
+		{
 		}
 
 		HUDEntityView _hudEntityView;
