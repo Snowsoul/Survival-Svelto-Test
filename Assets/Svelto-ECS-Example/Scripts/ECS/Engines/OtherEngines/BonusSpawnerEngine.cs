@@ -21,7 +21,6 @@ namespace Svelto.ECS.Example.Survive
 			while (true)
 			{
 				yield return new WaitForSeconds(interval);
-				Debug.Log(spawnerID);
 				SpawnBonusItem(bonusType, spawnerID);
 			}
 		}
@@ -67,8 +66,6 @@ namespace Svelto.ECS.Example.Survive
 			var spawnerID = _bonusSpawnerEntityViews.Count - 1;
 
 			SpawnBonusItemsInterval(interval, spawnerType, spawnerID).ThreadSafeRun();
-
-			Debug.Log(_bonusSpawnerEntityViews.Count);
 		}
 
 		protected override void Remove(BonusSpawnerEntityView entityView)

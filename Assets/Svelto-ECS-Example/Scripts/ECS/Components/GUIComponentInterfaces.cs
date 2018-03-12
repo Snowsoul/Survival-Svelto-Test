@@ -2,6 +2,11 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.HUD
 {
+	public interface IGrenadeHUDComponent : IComponent
+	{
+		float sliderValue { get; set; }
+	}
+
     public interface IDamageHUDComponent: IComponent
     {
         float speed { get; }

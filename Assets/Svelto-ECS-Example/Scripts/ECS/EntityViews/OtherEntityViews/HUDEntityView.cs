@@ -9,5 +9,6 @@ namespace Svelto.ECS.Example.Survive.HUD
 		public IWaveWaitingTimeComponent waveWaitingTimeComponent;
 		public IEnemiesLeftComponent enemiesLeftComponent;
 		public IBulletsManagerComponent bulletsManagerComponent;
+		public IGrenadeHUDComponent grenadeHUDComponent;
 	}
 }

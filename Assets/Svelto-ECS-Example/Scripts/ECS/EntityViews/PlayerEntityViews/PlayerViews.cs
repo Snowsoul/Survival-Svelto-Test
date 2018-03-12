@@ -34,9 +34,13 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
         public IGunAttributesComponent   gunComponent;
         public IGunFXComponent           gunFXComponent;
         public IGunHitTargetComponent    gunHitTargetComponent;
-		//public IGrenadeComponent		 grenadeComponent;
 		public IGrenadeSpawnerComponent  grenadeSpawnerComponent;
     }
+
+	public class GrenadeEntityView : EntityView
+	{
+		public IGrenadeComponent grenadeComponent;
+	}
 }
 
 namespace Svelto.ECS.Example.Survive.Player.Bonus

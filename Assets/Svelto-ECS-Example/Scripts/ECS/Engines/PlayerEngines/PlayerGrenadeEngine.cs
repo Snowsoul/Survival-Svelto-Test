@@ -5,25 +5,25 @@ using UnityEngine;
 
 namespace Svelto.ECS.Example.Survive.Player
 {
-    public class PlayerGrenadeEngine: SingleEntityViewEngine<GunEntityView>, IEngine
+    public class PlayerGrenadeEngine: MultiEntityViewsEngine<GunEntityView, GrenadeEntityView>, IEngine
     {
         public PlayerGrenadeEngine(ISequencer playerGrenadeDropSequence)
         {
-			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(UpdateTick())
-											  .SetScheduler(StandardSchedulers.updateScheduler);
+			
 		}
 
 		IEnumerator UpdateTick()
 		{
 			while(true)
 			{
-				//var grenadeComponent = _gunEntityView.grenadeComponent;
+				var grenadeComponent = _grenadeEntityView.grenadeComponent;
 				var grenadeSpawnerComponent = _gunEntityView.grenadeSpawnerComponent;
 
-				//if (grenadeComponent.spawned && !grenadeSpawnerComponent.grenadeCooldown)
-				//{
-				//	LateExplode().Run();
-				//}
+				if (grenadeComponent.spawned && !grenadeComponent.isExploding)
+				{
+					grenadeComponent.isExploding = true;
+					LateExplode().Run();
+				}
 
 				yield return null;
 			}
@@ -34,8 +34,8 @@ namespace Svelto.ECS.Example.Survive.Player
 		{
 			yield return new WaitForSeconds(0.7f);
 			Explode();
-			yield return new WaitForSeconds(2f);
-			//Destroy(gameObject);
+			yield return new WaitForSeconds(1.3f);
+			_grenadeEntityView.grenadeComponent.spawned = false;
 		}
 
 		IEnumerator LateStopDragging(Rigidbody rb)
@@ -61,50 +61,72 @@ namespace Svelto.ECS.Example.Survive.Player
 		void Explode()
 		{
 
-			//var meshComponents = transform.GetComponentsInChildren<MeshRenderer>();
+			// NOTE: 
 
-			//foreach (var mesh in meshComponents)
-			//{
-			//	mesh.enabled = false;
-			//}
+			// This part could probably be improved by creating some VFX implementors, RigidBody implementors
+			// Light Implementors and Mesh Implementors
 
-			//transform.GetComponentInChildren<ParticleSystem>().Play();
-			//transform.GetComponentInChildren<Light>().transform.gameObject.SetActive(false);
-			//transform.GetComponentInChildren<Rigidbody>().isKinematic = true;
+			// Also could probably create a GrenadePhysicsEngine for more modularity to be able to reuse
+			// the explosion part
 
-			//var grenadeComponent = _gunEntityView.grenadeComponent;
+			// As I am not yet a master of this framework I decided to keep the things in here to be able
+			// to finish the other tasks
 
-			//Collider[] colliders = Physics.OverlapSphere(grenadeComponent.instance.transform.position, 5f);
+			var instance = _grenadeEntityView.grenadeComponent.instance;
 
-			//foreach (Collider enemy in colliders)
-			//{
-			//	Rigidbody rb = enemy.GetComponent<Rigidbody>();
+			var meshComponents = instance.transform.GetComponentsInChildren<MeshRenderer>();
 
-			//	if (rb != null && enemy.tag == "Enemy")
-			//	{
-			//		Debug.Log("Explode");
+			foreach (var mesh in meshComponents)
+			{
+				mesh.enabled = false;
+			}
 
-			//		rb.AddExplosionForce(1000f, grenadeComponent.instance.transform.position, 5f);
-			//		rb.drag = 0;
-			//		rb.angularDrag = 0.5f;
-			//		LateStopDragging(rb).Run();
-			//	}
+			instance.transform.GetComponentInChildren<ParticleSystem>().Play();
+			instance.transform.GetComponentInChildren<Light>().transform.gameObject.SetActive(false);
+			instance.transform.GetComponentInChildren<Rigidbody>().isKinematic = true;
 
-			//}
+			Collider[] colliders = Physics.OverlapSphere(instance.transform.position, 5f);
+
+			foreach (Collider enemy in colliders)
+			{
+				Rigidbody rb = enemy.GetComponent<Rigidbody>();
+
+				if (rb != null && enemy.tag == "Enemy")
+				{
+					rb.AddExplosionForce(1000f, instance.transform.position, 5f);
+					rb.drag = 0;
+					rb.angularDrag = 0.5f;
+					LateStopDragging(rb).Run();
+				}
+
+			}
+		}
+
+		protected override void Add(GrenadeEntityView entityView)
+		{
+			_grenadeEntityView = entityView;
+			_taskRoutine = TaskRunner.Instance.AllocateNewTaskRoutine().SetEnumerator(UpdateTick())
+											  .SetScheduler(StandardSchedulers.updateScheduler);
+			_taskRoutine.Start();
+		}
+
+		protected override void Remove(GrenadeEntityView entityView)
+		{
+			_grenadeEntityView = null;
+			_taskRoutine.Stop();
 		}
 
 		protected override void Add(GunEntityView entityView)
 		{
 			_gunEntityView = entityView;
-			_taskRoutine.Start();
 		}
 
 		protected override void Remove(GunEntityView entityView)
 		{
 			_gunEntityView = null;
-			_taskRoutine.Stop();
 		}
 
+		GrenadeEntityView _grenadeEntityView;
 		GunEntityView _gunEntityView;
 		ITaskRoutine _taskRoutine;
     }

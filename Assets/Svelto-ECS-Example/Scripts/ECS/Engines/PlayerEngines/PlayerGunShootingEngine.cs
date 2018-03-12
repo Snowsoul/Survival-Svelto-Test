@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Svelto.ECS.Example.Survive.Player.Gun
 {
-    public class PlayerGunShootingEngine : MultiEntityViewsEngine<GunEntityView, PlayerEntityView, HUDEntityView>, 
+    public class PlayerGunShootingEngine : MultiEntityViewsEngine<GrenadeEntityView, GunEntityView, PlayerEntityView, HUDEntityView>, 
         IQueryingEntityViewEngine, IStep<DamageInfo>
     {
         public IEntityViewsDB entityViewsDB { set; private get; }
@@ -87,7 +87,18 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 
 		IEnumerator ResetGrenadeCooldownAfterTime()
 		{
-			yield return new WaitForSeconds(2f);
+			// Reset the grenade cooldown after 2 seconds and update the slider
+			// Could be done better... but will do for now to show the functionality
+
+			_hudEntityView.grenadeHUDComponent.sliderValue = 0;
+			yield return new WaitForSeconds(0.5f);
+			_hudEntityView.grenadeHUDComponent.sliderValue = 0.25f;
+			yield return new WaitForSeconds(0.5f);
+			_hudEntityView.grenadeHUDComponent.sliderValue = 0.50f;
+			yield return new WaitForSeconds(0.5f);
+			_hudEntityView.grenadeHUDComponent.sliderValue = 0.75f;
+			yield return new WaitForSeconds(0.5f);
+			_hudEntityView.grenadeHUDComponent.sliderValue = 1f;
 
 			var grenadeSpawnerComponent = _playerGunEntityView.grenadeSpawnerComponent;
 			grenadeSpawnerComponent.grenadeCooldown = false;
@@ -96,27 +107,22 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
 		void LaunchGrenade()
 		{
 			var grenadeSpawnerComponent = _playerGunEntityView.grenadeSpawnerComponent;
-			//var grenadeComponent = _playerGunEntityView.grenadeComponent;
 
 			if (!grenadeSpawnerComponent.grenadeCooldown)
 			{
 				var go = _gameObjectFactory.Build(grenadeSpawnerComponent.grenadePrefab);
-				//grenadeComponent.instance = go;
 
 				List<IImplementor> implementors = new List<IImplementor>();
 
-				//go.GetComponentsInChildren(implementors);
+				go.GetComponentsInChildren(implementors);
 
-				implementors.Add(new PlayerGrenadeImplementor());
-
-				//_entityFactory.BuildEntity<PlayerGunEntityDescriptor>(
-				//			   go.GetInstanceID(), implementors.ToArray());
-
-				//grenadeComponent.spawned = true;
-				grenadeSpawnerComponent.grenadeCooldown = true;
+				_entityFactory.BuildEntity<GrenadeEntityDescriptor>(
+							   go.GetInstanceID(), implementors.ToArray());
 
 				go.transform.position = grenadeSpawnerComponent.position;
 				go.transform.rotation = Quaternion.identity;
+
+				grenadeSpawnerComponent.grenadeCooldown = true;
 
 				ResetGrenadeCooldownAfterTime().Run();
 			}
@@ -183,12 +189,27 @@ namespace Svelto.ECS.Example.Survive.Player.Gun
             OnTargetDead(token.entityDamagedID);
         }
 
-        readonly EnemyKilledObservable _enemyKilledObservable;
+		protected override void Add(GrenadeEntityView entityView)
+		{
+			Debug.Log("add grenade?");
+			_grenadeEntityView = entityView;
+			var grenadeComponent = _grenadeEntityView.grenadeComponent;
+
+			grenadeComponent.spawned = true;
+		}
+
+		protected override void Remove(GrenadeEntityView entityView)
+		{
+			_grenadeEntityView = null;
+		}
+
+		readonly EnemyKilledObservable _enemyKilledObservable;
         readonly ISequencer            _enemyDamageSequence;
         readonly IRayCaster            _rayCaster;
 
         PlayerEntityView _playerEntityView;
         GunEntityView    _playerGunEntityView;
+        GrenadeEntityView    _grenadeEntityView;
 		HUDEntityView _hudEntityView;
         
         readonly ITime _time;
