@@ -9,9 +9,9 @@ namespace Svelto.ECS.Example.Survive.Player
 {
 	public class PlayerAmmoBoxEngine : MultiEntityViewsEngine<HUDEntityView, PlayerAmmoboxEntityView>
 	{
-		public PlayerAmmoBoxEngine()
+		public PlayerAmmoBoxEngine(ISequencer playerPickupSequence)
 		{
-			
+			_playerPickupSequence = playerPickupSequence;
 		}
 
 		IEnumerator UpdateTick(int entityID)
@@ -31,6 +31,9 @@ namespace Svelto.ECS.Example.Survive.Player
 					bulletsManagerComponent.ResetBullets();
 					playerAmmoBoxComponent.colided = false;
 					playerAmmoBoxComponent.DestroyBox();
+					// Tell the Bonus Spawner Engine that the ammobox was removed from the scene
+					var pickupInfo = new PickupInfo(playerAmmoBoxComponent.id, SpawnerTypes.Ammobox);
+					_playerPickupSequence.Next(this, ref pickupInfo);
 				}
 
 				yield return null;
@@ -69,5 +72,6 @@ namespace Svelto.ECS.Example.Survive.Player
 		HUDEntityView _hudEntityView;
 		List<PlayerAmmoboxEntityView> _playerBonusEntityViews = new List<PlayerAmmoboxEntityView>();
 		ITaskRoutine _taskRoutine;
+		ISequencer _playerPickupSequence;
 	}
 }

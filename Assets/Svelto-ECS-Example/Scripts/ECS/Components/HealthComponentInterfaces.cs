@@ -35,6 +35,18 @@ namespace Svelto.ECS.Example.Survive
         }
     }
 
+	public struct PickupInfo
+	{
+		public int pickupID { get; set; }
+		public SpawnerTypes type { get; set; }
+
+		public PickupInfo(int id, SpawnerTypes pickupType)
+		{
+			pickupID = id;
+			type = pickupType;
+		}
+	}
+
 	public struct WaveStartInfo
 	{
 		public int enemiesToSpawn { get; set; }

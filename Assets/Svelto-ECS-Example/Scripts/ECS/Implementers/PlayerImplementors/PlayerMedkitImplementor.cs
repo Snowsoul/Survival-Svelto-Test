@@ -7,7 +7,8 @@ namespace Svelto.ECS.Example.Survive.Player
 	{
 		public bool colided { get { return _colided; } set { _colided = value; } }
 		public int healthBonus { get { return _healthBonus; } }
-		public int id { get { return _id; } set { _id = value; } }
+		public int id { get; set; }
+		public int instanceID { get; set; }
 
 		public void DestroyBox()
 		{
@@ -18,8 +19,8 @@ namespace Svelto.ECS.Example.Survive.Player
 		{
 			if (other.tag == "Player")
 			{
+				instanceID = other.gameObject.GetInstanceID();
 				colided = true;
-				_id = other.gameObject.GetInstanceID();
 			}
 		}
 
@@ -31,6 +32,5 @@ namespace Svelto.ECS.Example.Survive.Player
 
 		bool _colided = false;
 		int _healthBonus = 50;
-		int _id;
 	}
 }

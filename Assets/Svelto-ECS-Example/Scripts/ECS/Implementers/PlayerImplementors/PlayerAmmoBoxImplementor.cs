@@ -6,6 +6,7 @@ namespace Svelto.ECS.Example.Survive.Player
 	public class PlayerAmmoBoxImplementor : MonoBehaviour, IImplementor, IPlayerAmmoBoxComponent
 	{
 		public bool colided { get { return _colided; } set { _colided = value; } }
+		public int id { get; set; }
 
 		public void DestroyBox()
 		{

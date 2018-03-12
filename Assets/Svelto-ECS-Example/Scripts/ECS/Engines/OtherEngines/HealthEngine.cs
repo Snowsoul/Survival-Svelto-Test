@@ -30,7 +30,7 @@ namespace Svelto.ECS.Example.Survive
 
 		public void Step(ref HealInfo heal, int condition)
 		{
-			UnityEngine.Debug.Log("heal " + heal.healAmmount);
+			UnityEngine.Debug.Log("heal " + heal.healAmmount.ToString() + " " + heal.entityHealID.ToString());
 			// Heal Sequence Step
 			var entityView = entityViewsDB.QueryEntityView<HealthEntityView>(heal.entityHealID);
 			var healthComponent = entityView.healthComponent;

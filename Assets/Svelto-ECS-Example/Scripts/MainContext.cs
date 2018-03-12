@@ -131,6 +131,7 @@ namespace Svelto.ECS.Example.Survive
 			//between engines
 			Sequencer playerHealSequence = new Sequencer();
 			Sequencer playerDamageSequence = new Sequencer();
+			Sequencer playerPickupSequence = new Sequencer();
 			Sequencer enemyDamageSequence = new Sequencer();
 			Sequencer enemySpawnSequence = new Sequencer();
 
@@ -148,8 +149,8 @@ namespace Svelto.ECS.Example.Survive
 			var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
 			var playerAnimationEngine = new PlayerAnimationEngine();
 			var playerDeathEngine = new PlayerDeathEngine(entityFunctions);
-			var playerAmmoBoxEngine = new PlayerAmmoBoxEngine();
-			var playerMedkitEngine = new PlayerMedkitEngine(playerHealSequence);
+			var playerAmmoBoxEngine = new PlayerAmmoBoxEngine(playerPickupSequence);
+			var playerMedkitEngine = new PlayerMedkitEngine(playerHealSequence, playerPickupSequence);
 			var playerGrenadeEngine = new PlayerGrenadeEngine();
 			var playerWaveAnnouncerEngine = new WaveAnnouncerEngine(enemySpawnSequence);
 
@@ -260,6 +261,26 @@ namespace Svelto.ECS.Example.Survive
 						}
 					}
 				}	
+			);
+
+			playerPickupSequence.SetSequence(
+				new Steps
+				{
+					{
+						playerAmmoBoxEngine,
+						new To
+						{
+							bonusSpawnerEngine
+						}
+					},
+					{
+						playerMedkitEngine,
+						new To
+						{
+							bonusSpawnerEngine
+						}
+					}
+				}
 			);
 
 			//Mandatory step to make engines work
