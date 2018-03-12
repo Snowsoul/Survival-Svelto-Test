@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using Svelto.Tasks.Enumerators;
 using System.IO;
 using UnityEngine;
+using Svelto.ECS.Example.Survive.HUD;
 
 namespace Svelto.ECS.Example.Survive.Enemies
 {
-    public class EnemySpawnerEngine : IEngine, IStep<DamageInfo>
+    public class EnemySpawnerEngine : SingleEntityViewEngine<HUDEntityView>, IEngine, IStep<WaveStartInfo>, IStep<DamageInfo>
     {
-        public EnemySpawnerEngine(Factories.IGameObjectFactory gameobjectFactory, IEntityFactory entityFactory)
+        public EnemySpawnerEngine(Factories.IGameObjectFactory gameobjectFactory, IEntityFactory entityFactory, ISequencer enemySpawnSequence)
         {
             _gameobjectFactory = gameobjectFactory;
             _entityFactory = entityFactory;
-            _numberOfEnemyToSpawn = 15;
+			_enemySpawnSequence = enemySpawnSequence;
 
-            IntervaledTick().Run();
-        }
+
+		}
 
         IEnumerator IntervaledTick()
         {
@@ -74,6 +75,7 @@ namespace Svelto.ECS.Example.Survive.Enemies
 
                             transform.position = spawnInfo.position;
                             transform.rotation = spawnInfo.rotation;
+							transform.localScale = new Vector3(_enemiesData.enemiesScale, _enemiesData.enemiesScale, _enemiesData.enemiesScale);
 
                             spawnData.timeLeft = spawnData.spawnTime;
                             _numberOfEnemyToSpawn--;
@@ -94,15 +96,58 @@ namespace Svelto.ECS.Example.Survive.Enemies
             return enemiestoSpawn;
         }
 
-        public void Step(ref DamageInfo token, int condition)
-        {
-            _numberOfEnemyToSpawn++;
-        }
+		void UpdateEnemiesLeftHUD(int enemiesLeft)
+		{
+			_hudEntityView.enemiesLeftComponent.enemies = enemiesLeft;
 
-        readonly Factories.IGameObjectFactory   _gameobjectFactory;
+		}
+
+		public void Step(ref WaveStartInfo token, int condition)
+		{
+			_enemiesData = token;
+			_numberOfEnemyToSpawn = _enemiesData.enemiesToSpawn;
+			_enemiesSpawned = _numberOfEnemyToSpawn;
+
+			UpdateEnemiesLeftHUD(_enemiesSpawned);
+
+			IntervaledTick().Run();
+		}
+
+		protected override void Add(HUDEntityView entityView)
+		{
+			_hudEntityView = entityView;
+		}
+
+		protected override void Remove(HUDEntityView entityView)
+		{
+			_hudEntityView = null;
+		}
+
+		public void Step(ref DamageInfo token, int condition)
+		{
+			if (condition == DamageCondition.Dead)
+			{
+				if (_enemiesSpawned > 1)
+				{
+					_enemiesSpawned--;
+					UpdateEnemiesLeftHUD(_enemiesSpawned);
+				}
+				else
+				{
+					var spawnInfo = new WaveStartInfo(0);
+					_enemySpawnSequence.Next(this, ref spawnInfo);
+				}
+			}
+		}
+
+		readonly Factories.IGameObjectFactory   _gameobjectFactory;
         readonly IEntityFactory                 _entityFactory;
-        readonly WaitForSecondsEnumerator       _waitForSecondsEnumerator = new WaitForSecondsEnumerator(1);
+		private readonly ISequencer _enemySpawnSequence;
+		readonly WaitForSecondsEnumerator       _waitForSecondsEnumerator = new WaitForSecondsEnumerator(1);
 
         int     _numberOfEnemyToSpawn;
-    }
+		int     _enemiesSpawned;
+		WaveStartInfo _enemiesData;
+		private HUDEntityView _hudEntityView;
+	}
 }

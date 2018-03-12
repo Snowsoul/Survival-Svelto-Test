@@ -132,6 +132,7 @@ namespace Svelto.ECS.Example.Survive
 			Sequencer playerHealSequence = new Sequencer();
 			Sequencer playerDamageSequence = new Sequencer();
 			Sequencer enemyDamageSequence = new Sequencer();
+			Sequencer enemySpawnSequence = new Sequencer();
 
 
 			//wrap non testable unity static classes, so that 
@@ -142,7 +143,7 @@ namespace Svelto.ECS.Example.Survive
 			//Player related engines. ALL the dependecies must be solved at this point
 			//through constructor injection.
 			var playerHealthEngine = new HealthEngine(playerDamageSequence, playerHealSequence);
-			var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster, 
+			var playerShootingEngine = new PlayerGunShootingEngine(enemyKilledObservable, enemyDamageSequence, rayCaster,
 				time, factory, _entityFactory);
 			var playerMovementEngine = new PlayerMovementEngine(rayCaster, time);
 			var playerAnimationEngine = new PlayerAnimationEngine();
@@ -150,6 +151,7 @@ namespace Svelto.ECS.Example.Survive
 			var playerAmmoBoxEngine = new PlayerAmmoBoxEngine();
 			var playerMedkitEngine = new PlayerMedkitEngine(playerHealSequence);
 			var playerGrenadeEngine = new PlayerGrenadeEngine();
+			var playerWaveAnnouncerEngine = new WaveAnnouncerEngine(enemySpawnSequence);
 
 			//Enemy related engines
 			var enemyAnimationEngine = new EnemyAnimationEngine(time);
@@ -157,7 +159,7 @@ namespace Svelto.ECS.Example.Survive
 			var enemyHealthEngine = new HealthEngine(enemyDamageSequence, playerHealSequence);
 			var enemyAttackEngine = new EnemyAttackEngine(playerDamageSequence, time);
 			var enemyMovementEngine = new EnemyMovementEngine();
-			var enemySpawnerEngine = new EnemySpawnerEngine(factory, _entityFactory);
+			var enemySpawnerEngine = new EnemySpawnerEngine(factory, _entityFactory, enemySpawnSequence);
 			var enemyDeathEngine = new EnemyDeathEngine(entityFunctions);
 
 			//hud and sound engines
@@ -240,6 +242,26 @@ namespace Svelto.ECS.Example.Survive
 				}
 			);
 
+			enemySpawnSequence.SetSequence(
+				new Steps
+				{
+					{
+						playerWaveAnnouncerEngine,
+						new To
+						{
+							enemySpawnerEngine
+						}
+					},
+					{
+						enemySpawnerEngine,
+						new To
+						{
+							{ WaveStatus.Stop, new IStep[] { playerWaveAnnouncerEngine } }
+						}
+					}
+				}	
+			);
+
 			//Mandatory step to make engines work
 			//Player engines
 			_enginesRoot.AddEngine(playerMovementEngine);
@@ -263,7 +285,7 @@ namespace Svelto.ECS.Example.Survive
 			_enginesRoot.AddEngine(damageSoundEngine);
 			_enginesRoot.AddEngine(hudEngine);
 			_enginesRoot.AddEngine(new ScoreEngine(scoreOnEnemyKilledObserver));
-			_enginesRoot.AddEngine(new WaveAnnouncerEngine());
+			_enginesRoot.AddEngine(playerWaveAnnouncerEngine);
 			_enginesRoot.AddEngine(bonusSpawnerEngine);
 			
 		}

@@ -23,8 +23,6 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 		{
 			yield return new WaitForSeconds(1);
 			text.enabled = false;
-
-			// Should send Next to a sequencer and let the EnemySpawnerEngine know that the first wave has started
 		}
 
 		void Awake()
@@ -33,7 +31,13 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 			_text = GetComponent<Text>();
 
 			// Reset the score.
-			_secondsRemaining = _initialSecondsRemaining;
+			secondsRemaining = _initialSecondsRemaining;
+		}
+
+		public void Reset()
+		{
+			secondsRemaining = _initialSecondsRemaining;
+			_text.enabled = true;
 		}
 
 		int _secondsRemaining;

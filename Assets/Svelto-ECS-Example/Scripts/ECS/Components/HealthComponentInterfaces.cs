@@ -35,6 +35,18 @@ namespace Svelto.ECS.Example.Survive
         }
     }
 
+	public struct WaveStartInfo
+	{
+		public int enemiesToSpawn { get; set; }
+		public float enemiesScale { get; set; }
+
+		public WaveStartInfo(int enemiesCount = 0, float scale = 1)
+		{
+			enemiesToSpawn = enemiesCount;
+			enemiesScale = scale;
+		}
+	}
+
     public enum EntityDamagedType
     {
         EnemyTarget,

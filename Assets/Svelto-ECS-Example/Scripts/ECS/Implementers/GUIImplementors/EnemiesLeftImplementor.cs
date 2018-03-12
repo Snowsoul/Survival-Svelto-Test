@@ -8,7 +8,7 @@ namespace Svelto.ECS.Example.Survive.Implementors.HUD
 {
 	public class EnemiesLeftImplementor : MonoBehaviour, IImplementor, IEnemiesLeftComponent
 	{
-		public int enemies { get { return _enemies; } set { _enemies = value; } }
+		public int enemies { get { return _enemies; } set { _enemies = value; _text.text = "Enemies Left: " + _enemies.ToString(); } }
 		public bool isEnabled { get { return _enabled; } set { _enabled = value; _text.enabled = _enabled; } }
 
 		void Awake()
